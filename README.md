@@ -41,6 +41,8 @@ import * as mcir from './mcir.mjs';
 Copy the following code to index.mjs
 
 ```js
+//npm install https://github.com/PeterTadich/newton-euler https://github.com/PeterTadich/industrial-robots
+
 import * as hlao from 'matrix-computations';
 import * as mcnef from 'newton-euler';
 import * as mcir from 'industrial-robots';
