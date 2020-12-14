@@ -1,0 +1,22 @@
+{
+  "name": "industrial-robots",
+  "version": "1.0.0",
+  "description": "robots used in industry",
+  "main": "mcir.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PeterTadich/industrial-robots.git"
+  },
+  "author": "Peter Tadich",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PeterTadich/industrial-robots/issues"
+  },
+  "homepage": "https://github.com/PeterTadich/industrial-robots#readme",
+  "dependencies": {
+    "matrix-computations": "git+https://github.com/PeterTadich/matrix-computations.git"
+  }
+}
