@@ -134,7 +134,6 @@ function puma560(){
         [0.0,0.0,1.0,0.0],
         [0.0,0.0,0.0,1.0]
     ];
-    var rc = [];
     var r = [];
     for(var i=1;i<=n;i=i+1){ //coordinate transforms between Frame {i} and Frame {i-1}
         //homogeneous transformation matrix:
@@ -324,7 +323,6 @@ function stanford(){
         [0.0,0.0,1.0,0.0],
         [0.0,0.0,0.0,1.0]
     ];
-    var rc = [];
     var r = [];
     for(var i=1;i<=n;i=i+1){ //coordinate transforms between Frame {i} and Frame {i-1}
         //homogeneous transformation matrix:
