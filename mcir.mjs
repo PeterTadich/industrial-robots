@@ -381,7 +381,115 @@ function stanford(){
     return mua;
 }
 
+//Two link manipulator.
+//ref: Robotics, Modelling, Planning and Control
+//   - Example 7.2, page 269
+function twoLinkManipulator(){
+    //To do:
+    //   - fix I1zz calc
+    //   - mm1, mm2 are not being used
+
+    //parameters
+    //Denavit-Hartenberg parameters
+    var a1 = 1.0; //m
+    var a2 = 1.0; //m
+    //position of centre of mass from frame {i}
+    var l1 = 0.5; //m
+    var l2 = 0.5; //m
+    //inertia of the link
+    var Il1 = 10.0; //kg.m^2
+    var Il2 = 10.0; //kg.m^2
+    //mass of the link
+    var ml1 = 50.0; //kg
+    var ml2 = 50.0; //kg
+    //var Im1 = 0.01; //kg.m^2
+    //var Im2 = 0.01; //kg.m^2
+    //inertia of the rotor
+    var Im1 = 0.0; //kg.m^2 (IMPORTANT: mua.Ir = [0.0,0.01,0.01])
+    var Im2 = 0.0; //kg.m^2
+    //mass of the rotor
+    var mm1 = 5.0; //kg
+    var mm2 = 5.0; //kg
+    //Gear reduction ratio. IMPORTANT: it is not squared
+    var kr1 = 100.0;
+    var kr2 = 100.0;
+    //gravity
+    var g = 9.81; //ref: page 289.
+
+    var lc1 = l1-a1;
+    var lc2 = l2-a2;
+
+    //inertia
+    var I = [];
+    var I1zz = Il1+ml1*Math.pow((l1-a1),2)+Im2-ml1*Math.pow(lc1,2); //See page 292. (IMPORTANT: Im2 = 0.0)
+    I[0] = [
+        [0.0,0.0, 0.0],
+        [0.0,0.0, 0.0],
+        [0.0,0.0,I1zz],
+    ];
+    var I2zz = Il2+ml2*Math.pow((l2-a2),2)-ml2*Math.pow(lc2,2); //See page 292. 
+    I[1] = [
+        [0.0,0.0, 0.0],
+        [0.0,0.0, 0.0],
+        [0.0,0.0,I2zz],
+    ];
+
+    //joint position - initial condition
+    var v1 = -1.0*Math.PI/2.0; //rad
+    var v2 = Math.PI; //rad
+    var v1d = 0.0; //rad/s
+    var v2d = 0.0; //rad/s
+    var v1dd = 26.0; //rad.s^-2
+    var v2dd = 26.0; //rad.s^-2
+
+    var mua = {
+        //Denavit-Hartenberg parameters
+        DH: [ //[ai, alpha_i,  di, vi].
+                [a1,     0.0, 0.0, v1], //'ai' in m, 'vi' in radians being joint position
+                [a2,     0.0, 0.0, v2]
+            ],
+        //joint type
+        jt:['R','R'],
+        //joint kinematics
+        v: [v1,v2], //joint position (same as q, qd, qdd (generalized coordinates) for revolute joint)
+        vd: [v1d,v2d], //joint velocity
+        vdd: [v1dd,v2dd], //joint acceleration
+        //link kinematics
+        w: [[[0.0],[0.0],[0.0]]], //link 0 (frame {0}) angular velocity (initial condition)
+        wd: [[[0.0],[0.0],[0.0]]], //link 0 (frame {0}) angular acceleration (initial condition)
+        wdr: [], //rotor
+        pd: [], //link velocity
+        pdd: [[[0.0],[0.0],[0.0]]], //link acceleration (initial condition)
+        pcdd: [], //CoM acceleration
+        R: [[
+            [1.0,0.0,0.0],
+            [0.0,1.0,0.0],
+            [0.0,0.0,1.0]
+        ]],
+        //14 dynamic parameters per joint (page 262, 263):
+        m: [ml1,ml2], //(1) mass of the links
+        mr: [], //(1) mass of the rotor
+        rc: [[[lc1],[0.0],[0.0]],[[lc2],[0.0],[0.0]]], //(3) components of the first moment of inertia (7.72)
+        I: I, //(6) components of the inertia tensor in (7.73),
+        Ir: [0.01,0.01], //(1) the moment of inertia of the rotor (IMPORTANT: need to check this)
+        Fvi: [], //(1) viscous friction coefficient Fvi
+        Fsi: [], //(1) Coulomb friction coefficient Fsi
+        //link velocities derivation (page 108)
+        r: [[[a1],[0.0],[0.0]],[[a2],[0.0],[0.0]]], //position of {i} w.r.t {i-1}
+        //others
+        g: [[0.0],[-9.81],[0.0]], //   - define 'g' (gravity) direction.
+        //g: [[0.0],[0.0],[-9.81]], //   - define 'g' (gravity) direction.
+        kr: [kr1,kr2], //   - gear reduction ratio. kr.
+        Bm: [0.0,0.0],
+        Tc: [[0.0,-0.0],[0.0,-0.0]]
+    };
+    
+    return mua;
+}
+
+
 export {
     puma560,
-    stanford
+    stanford,
+    twoLinkManipulator
 };
